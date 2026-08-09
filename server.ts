@@ -2,10 +2,12 @@ import express from 'express';
 import path from 'path';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
-import { createServer as createViteServer } from 'vite';
-import { GIFTS_CATALOG } from './src/data/gifts';
-import { MOCK_STREAMERS } from './src/data/mockStreams';
-import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattleState } from './src/types';
+
+// Rutas corregidas apuntando a la raíz del repositorio
+import { GIFTS_CATALOG } from './data/gifts';
+import { MOCK_STREAMERS } from './data/mockStreamers';
+import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattleState } from './types';
+
 
 const app = express();
 app.use(express.json());
