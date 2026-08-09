@@ -2,11 +2,11 @@ import express from 'express';
 import path from 'path';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
-
 // Rutas corregidas apuntando a la raíz del repositorio
 import { GIFTS_CATALOG } from './data/gifts';
 import { MOCK_STREAMERS } from './data/mockStreamers';
 import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattleState } from './types';
+
 
 
 const app = express();
