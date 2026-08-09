@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Corregido: Instalación limpia forzando la descarga de dependencias opcionales
-RUN npm install --include=optional
+RUN npm install --include=optional 
 
 COPY . .
 RUN npm run build
