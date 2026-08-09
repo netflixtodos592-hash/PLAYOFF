@@ -3,11 +3,11 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  base: './', // 🚀 CORRECCIÓN: Fuerza a Vite a usar rutas relativas para que no cargue en blanco
   plugins: [
     react(),
     tailwindcss()
   ],
-  // Solución definitiva: Evita que Vite intente leer o compilar el archivo server.ts de backend
   build: {
     rollupOptions: {
       external: [
