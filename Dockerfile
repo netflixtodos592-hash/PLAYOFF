@@ -3,6 +3,8 @@ FROM node:18 AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+# Forzar la descarga del binario correcto de Tailwind para el sistema actual
+RUN npm rebuild @tailwindcss/oxide --build-from-source || true
 COPY . .
 RUN npm run build
 
