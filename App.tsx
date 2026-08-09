@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TopNavbar } from './components/TopNavbar';
 import { BottomNavbar } from './components/BottomNavbar';
 import { LiveStreamViewer } from './components/LiveStreamViewer';
-import { ShortsFeed } from './components/ShortsFeed';
+import { ShortsFeed, ShortItem } from './components/ShortsFeed';
 import { GiftStoreModal } from './components/GiftStoreModal';
 import { CoinWalletModal } from './components/CoinWalletModal';
 import { CreatorStudioModal } from './components/CreatorStudioModal';
 import { UserLiveBroadcaster } from './components/UserLiveBroadcaster';
+import { VideoUploadModal } from './components/VideoUploadModal';
+import { AuthModal, UserAccount } from './components/AuthModal';
 import { GiftAnimationOverlay } from './components/GiftAnimationOverlay';
 import { MOCK_STREAMERS } from './data/mockStreams';
 import { Streamer, UserWallet, LiveComment, GiftEvent, GiftItem, PKBattleState } from './types';
@@ -15,6 +17,24 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'feed' | 'live' | 'wallet' | 'creator'>('live');
   const [streamers, setStreamers] = useState<Streamer[]>(MOCK_STREAMERS);
   const [activeStreamIdx, setActiveStreamIdx] = useState(0);
+
+  // User Account & Email Authentication
+  const [currentUser, setCurrentUser] = useState<UserAccount>(() => {
+    const saved = localStorage.getItem('user_account');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return {
+      email: 'creador.maria@gmail.com',
+      displayName: 'María Creadora 🌸',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      coins: 1250,
+      diamonds: 18400,
+    };
+  });
+
+  // Custom Uploaded Shorts
+  const [customShorts, setCustomShorts] = useState<ShortItem[]>([]);
 
   // User Wallet State
   const [wallet, setWallet] = useState<UserWallet>({
@@ -35,6 +55,8 @@ export default function App() {
   const [isCoinWalletOpen, setIsCoinWalletOpen] = useState(false);
   const [isCreatorStudioOpen, setIsCreatorStudioOpen] = useState(false);
   const [isBroadcasterOpen, setIsBroadcasterOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const socketRef = useRef<WebSocket | null>(null);
   const activeStreamer = streamers[activeStreamIdx] || streamers[0];
@@ -214,8 +236,10 @@ export default function App() {
         }}
         userCoins={wallet.coins}
         userDiamonds={wallet.diamonds}
+        currentUser={currentUser}
         onOpenWallet={() => setIsCoinWalletOpen(true)}
         onOpenCreatorStudio={() => setIsCreatorStudioOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Main Viewport Container */}
@@ -243,6 +267,8 @@ export default function App() {
         {activeTab === 'feed' && (
           <ShortsFeed
             streamers={streamers}
+            customShorts={customShorts}
+            onOpenUploadModal={() => setIsUploadModalOpen(true)}
             onSelectStream={(streamer) => {
               const idx = streamers.findIndex(s => s.id === streamer.id);
               if (idx !== -1) setActiveStreamIdx(idx);
@@ -264,6 +290,28 @@ export default function App() {
       />
 
       {/* Modals & Drawers */}
+      <VideoUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUploadSuccess={(newVideo) => {
+          const newShort: ShortItem = {
+            id: `short-${Date.now()}`,
+            title: newVideo.title,
+            likes: '1',
+            comments: '0',
+            videoUrl: newVideo.videoUrl,
+            streamer: {
+              username: 'tu_usuario',
+              displayName: newVideo.authorName,
+              avatar: newVideo.authorAvatar,
+              streamBgGradient: 'from-rose-950 via-purple-900 to-black'
+            }
+          };
+          setCustomShorts(prev => [newShort, ...prev]);
+          setActiveTab('feed');
+        }}
+      />
+
       <GiftStoreModal
         isOpen={isGiftStoreOpen}
         onClose={() => setIsGiftStoreOpen(false)}
@@ -297,6 +345,32 @@ export default function App() {
         wallet={wallet}
         onSimulateIncomingGift={handleSimulateFanGift}
         onUpdateWallet={(newWallet) => setWallet(newWallet)}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        currentUser={currentUser}
+        onLogin={(acc) => {
+          setCurrentUser(acc);
+          localStorage.setItem('user_account', JSON.stringify(acc));
+          setWallet(prev => ({
+            ...prev,
+            coins: acc.coins,
+            diamonds: acc.diamonds
+          }));
+        }}
+        onLogout={() => {
+          const emptyAcc: UserAccount = {
+            email: '',
+            displayName: 'Invitado',
+            avatar: '',
+            coins: 0,
+            diamonds: 0
+          };
+          setCurrentUser(emptyAcc);
+          localStorage.removeItem('user_account');
+        }}
       />
     </div>
   );
