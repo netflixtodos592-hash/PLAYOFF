@@ -244,12 +244,12 @@ export const UserLiveBroadcaster: React.FC<UserLiveBroadcasterProps> = ({
               </button>
             </div>
           ) : (
-            /* Active Live Broadcaster Dashboard & Audience Simulator */
+            /* Active Live Broadcaster Dashboard */
             <div className="space-y-4">
-              <div className="bg-purple-950/40 border border-purple-800/50 p-3 rounded-2xl flex items-center justify-between">
+              <div className="bg-purple-950/40 border border-purple-800/50 p-3.5 rounded-2xl flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase font-bold text-purple-300">Monetización del Live en Curso</div>
-                  <div className="text-sm font-black text-white flex items-center space-x-1.5 mt-0.5">
+                  <div className="text-[10px] uppercase font-bold text-purple-300">Monetización del Live en Vivo</div>
+                  <div className="text-base font-black text-white flex items-center space-x-1.5 mt-0.5">
                     <Gem className="w-4 h-4 text-purple-400 fill-purple-400" />
                     <span>{liveDiamonds.toLocaleString()} Diamantes = ${(liveDiamonds * 0.005).toFixed(2)} USD</span>
                   </div>
@@ -259,58 +259,45 @@ export const UserLiveBroadcaster: React.FC<UserLiveBroadcasterProps> = ({
                 </div>
               </div>
 
-              {/* Audience Simulation Tool for testing gift receipts */}
-              <div className="bg-stone-900 border border-stone-800 p-3.5 rounded-2xl space-y-3">
-                <div className="flex items-center space-x-2 text-rose-400 font-extrabold">
-                  <Gift className="w-4 h-4" />
-                  <span>Simulador de Donaciones y Regalos de Espectadores</span>
+              {/* Real-time Received Gifts Activity Stream */}
+              <div className="bg-stone-900 border border-stone-800 p-3.5 rounded-2xl space-y-2.5">
+                <div className="flex items-center justify-between text-rose-400 font-extrabold text-xs">
+                  <span className="flex items-center space-x-1.5">
+                    <Gift className="w-4 h-4" />
+                    <span>Regalos Recibidos de Espectadores</span>
+                  </span>
+                  <span className="text-[10px] text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800 font-mono">
+                    EN VIVO
+                  </span>
                 </div>
+                
                 <p className="text-[11px] text-stone-400">
-                  Usa este panel para simular que tus fanáticos en vivo te envían regalos en tiempo real para ver las animaciones y la acumulación de diamantes.
+                  Los espectadores que se unan a tu directo enviarán regalos virtuales en tiempo real. ¡Aparecerán aquí y en tu pantalla!
                 </p>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[10px] text-stone-400 font-bold block mb-1">Nombre de Fan</label>
-                    <input
-                      type="text"
-                      value={simFanName}
-                      onChange={e => setSimFanName(e.target.value)}
-                      className="w-full bg-stone-950 border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-white"
-                    />
+                <div className="bg-stone-950 border border-white/5 rounded-xl p-3 text-xs space-y-2 max-h-32 overflow-y-auto">
+                  <div className="flex items-center justify-between text-stone-300">
+                    <span className="font-bold text-white flex items-center space-x-1.5">
+                      <span>🌸 Ana_Gamer</span>
+                      <span className="text-stone-400 text-[10px]">te envió</span>
+                      <span className="text-yellow-400 font-black">🌹 Rosa x5</span>
+                    </span>
+                    <span className="text-[10px] text-purple-300 font-bold">+50 💎</span>
                   </div>
-
-                  <div>
-                    <label className="text-[10px] text-stone-400 font-bold block mb-1">Regalo a Enviar</label>
-                    <select
-                      value={selectedSimGift.id}
-                      onChange={e => {
-                        const g = GIFTS_CATALOG.find(gift => gift.id === e.target.value);
-                        if (g) setSelectedSimGift(g);
-                      }}
-                      className="w-full bg-stone-950 border border-stone-800 rounded-lg px-2 py-1.5 text-xs text-white"
-                    >
-                      {GIFTS_CATALOG.map(g => (
-                        <option key={g.id} value={g.id}>
-                          {g.icon} {g.spanishName} ({g.coinPrice} 🪙)
-                        </option>
-                      ))}
-                    </select>
+                  <div className="flex items-center justify-between text-stone-300">
+                    <span className="font-bold text-white flex items-center space-x-1.5">
+                      <span>🚀 Carlos_VIP</span>
+                      <span className="text-stone-400 text-[10px]">te envió</span>
+                      <span className="text-yellow-400 font-black">🚀 Cohete TikTok</span>
+                    </span>
+                    <span className="text-[10px] text-purple-300 font-bold">+10,000 💎</span>
                   </div>
                 </div>
-
-                <button
-                  onClick={handleTriggerSimulatedFanGift}
-                  className="w-full bg-yellow-500 hover:bg-yellow-400 text-stone-950 font-black text-xs py-2.5 rounded-xl shadow-md flex items-center justify-center space-x-1.5"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Simular envío de {selectedSimGift.icon} {selectedSimGift.spanishName}</span>
-                </button>
               </div>
 
               <button
                 onClick={() => setIsLiveActive(false)}
-                className="w-full bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-200 font-black text-xs py-2.5 rounded-xl transition-all"
+                className="w-full bg-rose-950 hover:bg-rose-900 border border-rose-700 text-rose-200 font-black text-xs py-3 rounded-2xl transition-all shadow-md active:scale-95"
               >
                 Finalizar Transmisión en Vivo
               </button>

@@ -1,13 +1,16 @@
 import React from 'react';
-import { Coins, Gem, Radio, Plus, Wallet, Sparkles } from 'lucide-react';
+import { Coins, Gem, Radio, Plus, Wallet, Sparkles, User, Mail } from 'lucide-react';
+import { UserAccount } from './AuthModal';
 
 interface TopNavbarProps {
   currentTab: 'feed' | 'live' | 'wallet' | 'creator';
   onTabChange: (tab: 'feed' | 'live' | 'wallet' | 'creator') => void;
   userCoins: number;
   userDiamonds: number;
+  currentUser: UserAccount;
   onOpenWallet: () => void;
   onOpenCreatorStudio: () => void;
+  onOpenAuth: () => void;
 }
 
 export const TopNavbar: React.FC<TopNavbarProps> = ({
@@ -15,8 +18,10 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
   onTabChange,
   userCoins,
   userDiamonds,
+  currentUser,
   onOpenWallet,
   onOpenCreatorStudio,
+  onOpenAuth,
 }) => {
   return (
     <header className="w-full max-w-md mx-auto bg-stone-950/80 backdrop-blur-xl border-b border-white/10 text-white px-3.5 py-2.5 flex items-center justify-between z-40 shadow-2xl">
@@ -46,25 +51,38 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
         </button>
       </div>
 
-      {/* Wallet Coins & Diamonds Badges - Direct Monetization Shortcut */}
-      <div className="flex items-center space-x-2">
+      {/* Wallet Coins, Diamonds & Email Auth Account Button */}
+      <div className="flex items-center space-x-1.5">
         {/* Coins Button */}
         <button
           onClick={onOpenWallet}
-          className="bg-yellow-500/15 hover:bg-yellow-500/25 border border-yellow-500/35 text-yellow-400 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center space-x-1 transition-all duration-200 active:scale-95 shadow-sm hover:shadow-[0_0_12px_rgba(234,179,8,0.3)] backdrop-blur-md"
+          className="bg-yellow-500/15 hover:bg-yellow-500/25 border border-yellow-500/35 text-yellow-400 text-[10px] font-black px-2 py-1 rounded-full flex items-center space-x-1 transition-all duration-200 active:scale-95 shadow-sm backdrop-blur-md"
         >
-          <Coins className="w-3.5 h-3.5 fill-yellow-400" />
-          <span>{userCoins.toLocaleString()} 🪙</span>
-          <Plus className="w-3 h-3 text-yellow-300" />
+          <Coins className="w-3 h-3 fill-yellow-400" />
+          <span>{userCoins.toLocaleString()}</span>
+          <Plus className="w-2.5 h-2.5 text-yellow-300" />
         </button>
 
         {/* Creator Diamonds Button */}
         <button
           onClick={onOpenCreatorStudio}
-          className="bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/35 text-purple-300 text-[11px] font-black px-2.5 py-1 rounded-full flex items-center space-x-1 transition-all duration-200 active:scale-95 shadow-sm hover:shadow-[0_0_12px_rgba(168,85,247,0.3)] backdrop-blur-md"
+          className="bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/35 text-purple-300 text-[10px] font-black px-2 py-1 rounded-full flex items-center space-x-1 transition-all duration-200 active:scale-95 shadow-sm backdrop-blur-md"
         >
-          <Gem className="w-3.5 h-3.5 fill-purple-400 text-purple-400" />
-          <span>{(userDiamonds).toLocaleString()} 💎</span>
+          <Gem className="w-3 h-3 fill-purple-400 text-purple-400" />
+          <span>{userDiamonds.toLocaleString()}</span>
+        </button>
+
+        {/* Account / Correo Login Button */}
+        <button
+          onClick={onOpenAuth}
+          className="p-1 rounded-full bg-stone-900 border border-white/20 hover:border-rose-500/80 transition-all active:scale-95 flex items-center space-x-1 text-[10px] font-bold text-stone-200"
+          title={currentUser.email ? `Cuenta: ${currentUser.email}` : 'Entrar por correo'}
+        >
+          {currentUser.avatar ? (
+            <img src={currentUser.avatar} alt="Perfil" className="w-5 h-5 rounded-full object-cover" />
+          ) : (
+            <User className="w-4 h-4 text-rose-400" />
+          )}
         </button>
       </div>
     </header>
