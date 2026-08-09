@@ -2,17 +2,15 @@ import express from 'express';
 import path from 'path';
 import { createServer } from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
-// Rutas corregidas apuntando a la raíz del repositorio
-import { GIFTS_CATALOG } from './data/gifts';
-import { MOCK_STREAMERS } from './data/mockStreamers';
-import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattleState } from './types';
-
-
+import { createServer as createViteServer } from 'vite';
+import { GIFTS_CATALOG } from './src/data/gifts';
+import { MOCK_STREAMERS } from './src/data/mockStreams';
+import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattleState } from './src/types';
 
 const app = express();
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 const httpServer = createServer(app);
 
 // Global In-Memory Database State
@@ -243,12 +241,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-app.get('/', (req, res) => {
-  res.json({
-    status: "online",
-    message: "Servidor backend de Playoff corriendo exitosamente en Google Cloud Run 🚀"
-  });
-});
 // REST API Endpoints
 
 // 1. Get Wallet Balance
