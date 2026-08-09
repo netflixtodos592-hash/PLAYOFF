@@ -12,7 +12,7 @@ import { UserWallet, Streamer, LiveComment, GiftEvent, WithdrawalRecord, PKBattl
 const app = express();
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const httpServer = createServer(app);
 
 // Global In-Memory Database State
@@ -243,6 +243,12 @@ wss.on('connection', (ws) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.json({
+    status: "online",
+    message: "Servidor backend de Playoff corriendo exitosamente en Google Cloud Run 🚀"
+  });
+});
 // REST API Endpoints
 
 // 1. Get Wallet Balance
