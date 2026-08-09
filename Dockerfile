@@ -1,15 +1,19 @@
-# Etapa de compilación
-FROM node:18 AS build
+# Etapa 1: Construcción
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
-# Forzar la descarga del binario correcto de Tailwind para el sistema actual
-RUN npm rebuild @tailwindcss/oxide --build-from-source || true
+
+# Corregido: Instalación limpia forzando la descarga de dependencias opcionales
+RUN npm install --include=optional
+
 COPY . .
 RUN npm run build
 
-# Etapa de producción
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Etapa 2: Servidor de producción ligero
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY package*.json ./
+EXPOSE 3000
+CMD ["node", "dist/server.js"]
